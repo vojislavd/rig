@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "vojislavd.rig",
+  "name": "rig",
+  "version": "1.0.0",
+  "author": "vojislavd",
+  "license": "MIT",
+  "description": "rig stack health, Mailpit and Garage switches, and site workers in the Omarchy bar.",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "Panel.qml"
+  },
+  "barWidget": {
+    "displayName": "rig",
+    "description": "Stack health, mail and S3 switches, and site workers.",
+    "category": "Developer",
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}

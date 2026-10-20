@@ -57,6 +57,7 @@ func TestRun(t *testing.T) {
 		{"uninstall dry-run", []string{"uninstall", "--dry-run"}, 0, "stop trusting rig's CA", ""},
 		{"uninstall answered no", []string{"uninstall"}, 1, "[y/N]", "aborted, nothing changed"},
 		{"sites empty", []string{"sites"}, 0, "No sites yet", ""},
+		{"status no-db extra arg", []string{"status", "--no-db", "x"}, 2, "", `unexpected argument "x"`},
 		{"status extra arg", []string{"status", "x"}, 2, "", `unexpected argument "x"`},
 		{"logs no target", []string{"logs"}, 2, "", "usage: rig logs <target>"},
 		{"logs unknown site", []string{"logs", "nope"}, 1, "", "site not found"},

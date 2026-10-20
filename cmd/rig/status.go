@@ -11,11 +11,12 @@ import (
 	"github.com/vojislavd/rig/internal/stack"
 )
 
-// runStatus handles "rig status [--json]": one overview of everything.
+// runStatus handles "rig status [--json] [--no-db]": one overview of everything.
 func runStatus(args []string, stdout, stderr io.Writer) int {
 	fs := flag.NewFlagSet("status", flag.ContinueOnError)
 	fs.SetOutput(stderr)
 	asJSON := fs.Bool("json", false, "machine-readable output")
+	noDB := fs.Bool("no-db", false, "don't log in to MariaDB; databases show as \"?\"")
 	if err := fs.Parse(args); err != nil {
 		return 2
 	}
@@ -29,8 +30,9 @@ func runStatus(args []string, stdout, stderr io.Writer) int {
 		return 1
 	}
 	// Databases are listed if rig's MariaDB login works; otherwise "?".
+	// --no-db skips the login: the bar widget polls every few seconds.
 	var dbList func() ([]string, error)
-	if c, err := newDBClient(); err == nil {
+	if c, err := newDBClient(); err == nil && !*noDB {
 		dbList = c.List
 	}
 	rep, err := st.Status(dbList)

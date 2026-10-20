@@ -105,7 +105,7 @@ are in.
 | `rig s3 start\|stop\|status` | Garage S3 storage |
 | `rig s3 enable <site>` | Give the site its own bucket and key, and point `.env` at it |
 | `rig s3 ls\|get\|put\|rm <site> ...` | Browse and manage the site's files |
-| `rig status` | Overview of the stack and sites |
+| `rig status [--no-db]` | Overview of the stack and sites (`--no-db` skips the MariaDB login) |
 | `rig logs <target>` | Follow a log: `nginx`, `php`, `mail`, `s3`, `<site>`, `<site>:queue` ... |
 | `rig doctor [--fix] [--security]` | Health, drift and security checks |
 | `rig ca rotate` | Replace the CA and reissue every site certificate |
@@ -136,6 +136,26 @@ Run `rig` with no arguments. It shows the health of the stack and every site.
 | `1` `2` `3` | Toggle its `queue` / `schedule` / `reverb` worker |
 | `m` / `s` | Start or stop Mailpit / Garage |
 | `r` / `q` | Refresh / quit |
+
+## Omarchy bar widget
+
+On [Omarchy](https://omarchy.org) 4, the `omarchy/` folder is a bar widget: an icon that
+is dim when the stack is stopped and red when something needs attention. Click it for a
+popup to start or stop Mailpit and Garage, toggle each site's `queue` / `schedule` /
+`reverb` worker (`Q` `S` `R`), and open sites. Right-click opens the dashboard.
+
+```sh
+install -d ~/.config/omarchy/plugins/vojislavd.rig
+install -m 0644 omarchy/* ~/.config/omarchy/plugins/vojislavd.rig/
+omarchy-shell shell rescanPlugins
+omarchy plugin enable vojislavd.rig --section right
+```
+
+To update, copy the files again and run `omarchy-restart-shell` (the automatic reload can
+keep old copies of `Service.qml` and `Model.js`).
+
+It runs `~/.local/bin/rig status --json --no-db` every 10 seconds and calls `rig` directly
+(no shell, no sudo). Commands that delete data or need root stay in the terminal.
 
 ## Security
 
@@ -216,7 +236,7 @@ Runs `gofmt`, `go vet`, `go test` and
 
 ## Roadmap
 
-- Desktop bar widget and notifications
+- Desktop notifications
 - `rig share`: expose chosen paths (e.g. a webhook) through a time-limited tunnel
 - Multiple PHP versions per site
 - Git worktree subdomains (`branch.foo.localhost`)
